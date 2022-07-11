@@ -1,2 +1,32 @@
-@import './common';
-@import './example';
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  margin: -15px;
+}
+
+.info {
+  display: flex;
+  justify-content: space-around;
+}
+.info-item {
+  font-size: 10px;
+}
+.photo-card img {
+  width: 100%;
+}
+.info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.is-hidden {
+  display: none;
+}
+
+.photo-card {
+  width: calc((100% - 120px) / 4);
+  margin: 15px;
+}
+.search-form {
+  margin-bottom: 50px;
+}
