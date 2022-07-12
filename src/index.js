@@ -23,16 +23,25 @@ btnLoadMoreEl.addEventListener('click', onBtnLoadMoreClick);
 
 async function onFormSubmit(event) {
   event.preventDefault();
-  galleryApi.query = event.currentTarget.elements.searchQuery.value;
   galleryApi.page = 1;
+  galleryApi.query = event.currentTarget.elements.searchQuery.value.trim();
+
+  if (galleryApi.query === '') {
+    cleanContainer();
+    disableBtnLoadMore(true);
+    createAlertFailure('Sorry, your query is empty, please, make your choice');
+    return;
+  }
 
   try {
     const data = await galleryApi.fetchPictures();
+
     if (data.hits.length === 0) {
-      containerEl.innerHTML = '';
+      cleanContainer();
       disableBtnLoadMore(true);
       throw 'Sorry, there are no images matching your search query. Please try again.';
     }
+
     createAlertInfo(`Hooray! We found ${data.totalHits} images.`);
     fillMarkUpAfterSubmit(data.hits);
     disableBtnLoadMore(false);
@@ -46,9 +55,11 @@ async function onBtnLoadMoreClick() {
 
   try {
     const data = await galleryApi.fetchPictures();
+
     fillMarkUpAfterLoadMore(data.hits);
 
     const totalPages = Math.ceil(data.totalHits / 40);
+
     if (totalPages === galleryApi.page) {
       disableBtnLoadMore(true);
       throw `We're sorry, but you've reached the end of search results.`;
@@ -81,4 +92,7 @@ function createAlertInfo(message) {
 }
 function createAlertFailure(message) {
   return Notiflix.Notify.failure(message, OPTIONS);
+}
+function cleanContainer() {
+  containerEl.innerHTML = '';
 }
