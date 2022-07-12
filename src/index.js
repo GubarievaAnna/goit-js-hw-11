@@ -10,7 +10,7 @@ const formEl = document.querySelector('.search-form');
 const containerEl = document.querySelector('.gallery');
 const btnLoadMoreEl = document.querySelector('.load-more');
 
-const OPTIONS = { timeout: 900 };
+const OPTIONS = { timeout: 1000 };
 const galleryLightbox = new SimpleLightbox('.gallery__item', {
   captionsData: 'alt',
   overlayOpacity: 0.8,
@@ -21,42 +21,41 @@ const galleryLightbox = new SimpleLightbox('.gallery__item', {
 formEl.addEventListener('submit', onFormSubmit);
 btnLoadMoreEl.addEventListener('click', onBtnLoadMoreClick);
 
-function onFormSubmit(event) {
+async function onFormSubmit(event) {
   event.preventDefault();
   galleryApi.query = event.currentTarget.elements.searchQuery.value;
   galleryApi.page = 1;
 
-  galleryApi
-    .fetchPictures()
-    .then(data => {
-      if (data.hits.length === 0) {
-        containerEl.innerHTML = '';
-        disableBtnLoadMore(true);
-        throw 'Sorry, there are no images matching your search query. Please try again.';
-      }
-
-      createAlertInfo(`Hooray! We found ${data.totalHits} images.`);
-      fillMarkUpAfterSubmit(data.hits);
-      disableBtnLoadMore(false);
-    })
-    .catch(createAlertFailure);
+  try {
+    const data = await galleryApi.fetchPictures();
+    if (data.hits.length === 0) {
+      containerEl.innerHTML = '';
+      disableBtnLoadMore(true);
+      throw 'Sorry, there are no images matching your search query. Please try again.';
+    }
+    createAlertInfo(`Hooray! We found ${data.totalHits} images.`);
+    fillMarkUpAfterSubmit(data.hits);
+    disableBtnLoadMore(false);
+  } catch (error) {
+    createAlertFailure(error);
+  }
 }
 
-function onBtnLoadMoreClick() {
+async function onBtnLoadMoreClick() {
   galleryApi.page += 1;
 
-  galleryApi
-    .fetchPictures()
-    .then(data => {
-      fillMarkUpAfterLoadMore(data.hits);
+  try {
+    const data = await galleryApi.fetchPictures();
+    fillMarkUpAfterLoadMore(data.hits);
 
-      const totalPages = Math.ceil(data.totalHits / 40);
-      if (totalPages === galleryApi.page) {
-        disableBtnLoadMore(true);
-        throw `We're sorry, but you've reached the end of search results.`;
-      }
-    })
-    .catch(createAlertFailure);
+    const totalPages = Math.ceil(data.totalHits / 40);
+    if (totalPages === galleryApi.page) {
+      disableBtnLoadMore(true);
+      throw `We're sorry, but you've reached the end of search results.`;
+    }
+  } catch (error) {
+    createAlertFailure(error);
+  }
 }
 
 function disableBtnLoadMore(status) {

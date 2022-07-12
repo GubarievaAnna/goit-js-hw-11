@@ -10,7 +10,7 @@ export class GalleryApi {
     this.query = null;
   }
 
-  fetchPictures() {
+  async fetchPictures() {
     axios.defaults.params = {
       key: this.#API_KEY,
       q: this.query,
@@ -21,6 +21,8 @@ export class GalleryApi {
       page: this.page,
     };
 
-    return axios.get(`api/`).then(response => response.data);
+    const response = await axios.get(`api/`);
+    const data = await response.data;
+    return data;
   }
 }
