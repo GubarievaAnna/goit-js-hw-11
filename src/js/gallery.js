@@ -12,13 +12,13 @@ export class GalleryApi {
 
   fetchPictures() {
     axios.defaults.params = {
-      page: this.page,
       key: this.#API_KEY,
       q: this.query,
       image_type: 'photo',
       orientation: 'horizontal',
       safesearch: true,
       per_page: 40,
+      page: this.page,
     };
 
     return axios.get(`api/`).then(response => response.data);
