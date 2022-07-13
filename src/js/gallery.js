@@ -8,6 +8,7 @@ export class GalleryApi {
   constuctor() {
     this.page = 1;
     this.query = null;
+    this.perPage = null;
   }
 
   async fetchPictures() {
@@ -17,7 +18,7 @@ export class GalleryApi {
       image_type: 'photo',
       orientation: 'horizontal',
       safesearch: true,
-      per_page: 40,
+      per_page: this.perPage,
       page: this.page,
     };
 

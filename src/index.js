@@ -10,6 +10,7 @@ const formEl = document.querySelector('.search-form');
 const containerEl = document.querySelector('.gallery');
 const btnLoadMoreEl = document.querySelector('.load-more');
 
+galleryApi.perPage = 20;
 const OPTIONS = { timeout: 1000 };
 const galleryLightbox = new SimpleLightbox('.gallery__item', {
   captionsData: 'alt',
@@ -42,6 +43,13 @@ async function onFormSubmit(event) {
       throw 'Sorry, there are no images matching your search query. Please try again.';
     }
 
+    if (data.hits.length < galleryApi.perPage) {
+      createAlertInfo(`Hooray! We found ${data.totalHits} images.`);
+      fillMarkUpAfterSubmit(data.hits);
+      disableBtnLoadMore(true);
+      return;
+    }
+
     createAlertInfo(`Hooray! We found ${data.totalHits} images.`);
     fillMarkUpAfterSubmit(data.hits);
     disableBtnLoadMore(false);
@@ -58,7 +66,7 @@ async function onBtnLoadMoreClick() {
 
     fillMarkUpAfterLoadMore(data.hits);
 
-    const totalPages = Math.ceil(data.totalHits / 40);
+    const totalPages = Math.ceil(data.totalHits / galleryApi.perPage);
 
     if (totalPages === galleryApi.page) {
       disableBtnLoadMore(true);
