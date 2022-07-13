@@ -4,13 +4,12 @@ import Notiflix from 'notiflix';
 import { GalleryApi } from './js/gallery';
 import createMarkupForPictures from './templates/markup_pictures.hbs';
 
-const galleryApi = new GalleryApi();
+const galleryApi = new GalleryApi(40);
 
 const formEl = document.querySelector('.search-form');
 const containerEl = document.querySelector('.gallery');
 const btnLoadMoreEl = document.querySelector('.load-more');
 
-galleryApi.perPage = 40;
 const OPTIONS = { timeout: 1000 };
 const galleryLightbox = new SimpleLightbox('.gallery__item', {
   captionsData: 'alt',
