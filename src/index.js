@@ -10,7 +10,7 @@ const formEl = document.querySelector('.search-form');
 const containerEl = document.querySelector('.gallery');
 const btnLoadMoreEl = document.querySelector('.load-more');
 
-galleryApi.perPage = 20;
+galleryApi.perPage = 40;
 const OPTIONS = { timeout: 1000 };
 const galleryLightbox = new SimpleLightbox('.gallery__item', {
   captionsData: 'alt',
